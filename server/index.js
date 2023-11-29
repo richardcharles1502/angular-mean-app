@@ -8,7 +8,6 @@ const url = "mongodb://mongo:27017"
 const client = new MongoClient(url);
 const dbName = "angulardb";
 
-
 app.use(cors());
 
 // parse application/x-www-form-urlencoded
