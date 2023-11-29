@@ -1,0 +1,40 @@
+version: "3"
+services:
+ angular-client:
+   image: angular-client
+   container_name: angular-client
+   #make the app alive and listern to request
+   stdin_open: true
+   ports: 
+      - "4200:4200"
+   networks:
+      - angular-mern-app
+ angular-server:
+   image: angular-server
+   container_name: angular-server
+   ports:
+      - "3000:3000"
+   networks:
+      - angular-mern-app
+  # make the dependency
+   depends_on:
+      - mongo
+ mongo:
+   image: mongo:latest
+   container_name: mongo
+   ports:
+      - "27018:27017"
+   networks:
+      - angular-mern-app
+    # define the volume of mongo db
+   volumes:
+      - mongo-data:/data/db
+
+  #create a network between the container
+networks:
+  angular-mern-app:
+   name: angular-mern-app
+   driver: bridge     
+volumes:
+  mongo-data:
+    driver: local 

@@ -1,0 +1,41 @@
+<form [formGroup]="myForm" (ngSubmit)="onsubmit()">
+<div class="container">
+  <h2>Contact Form</h2>
+ 
+  <div class="row">
+    <div class="col-25">
+      <label for="name">Name</label>
+    </div>
+    <div class="col-75">
+      <input type="text" id="name" name="name" class="form-control" formControlName="name" placeholder="Your name.." />
+      <div *ngIf="myForm.get('name')?.invalid && (myForm.get('name')?.dirty || myForm.get('name')?.touched)" class="alert alert-danger">
+        <div *ngIf="myForm.get('name')?.errors?.['required']" class="error">Name is required.</div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-25">
+      <label for="email">Email</label>
+    </div>
+    <div class="col-75">
+      <input type="email" id="email" name="email" formControlName="email" placeholder="Your email" email>
+      <div *ngIf="myForm.get('email')?.invalid && (myForm.get('email')?.dirty || myForm.get('email')?.touched)" class="alert alert-danger">
+        <div *ngIf="myForm.get('email')?.errors?.['email']" class="error">email is wrong.</div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-25">
+      <label for="password">Password</label>
+    </div>
+    <div class="col-75">
+      <input type="password" id="password" name="password" formControlName="password" placeholder="Your Password">
+    </div>
+  </div>
+  <br>
+  <div class="row">
+    <div class="col-75" ><p [ngClass]="{'fadeOut': isFadeOut}" id="success">Form submitted successfully!!!</p></div>
+    <div class="col-25"><input type="submit" value="Submit" [disabled]="!myForm.valid"></div>
+  </div>
+</div>
+</form>
