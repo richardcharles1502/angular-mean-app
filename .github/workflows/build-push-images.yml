@@ -14,9 +14,9 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Login to AWS ECR
-      env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AKIATUZX7772LQMWU6XK }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.DAXv9Je+VotP1r8yVs64GNNw1KlMdsVKT1ej9ScL }}
+          env:
+              AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+              AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 250836156404.dkr.ecr.eu-north-1.amazonaws.com
 
