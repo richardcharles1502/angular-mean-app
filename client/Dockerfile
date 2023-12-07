@@ -1,19 +1,20 @@
-# base image
+# Use a specific version of Node as the base image
 FROM node:18
 
-# set working directory
+# Set the working directory within the container
 WORKDIR /app
 
-# add `/app/node_modules/.bin` to $PATH
-ENV PATH /app/node_modules/.bin:$PATH
+# Copy only the package files to leverage Docker layer caching
+COPY package.json package-lock.json* /app/
 
-# install and cache app dependencies
-COPY package.json /app/package.json
-# RUN npm install
-# RUN npm install -g @angular/cli@latest
+# Install app dependencies using npm ci
+RUN npm ci --silent
 
-# add app
+# Install Angular CLI globally (if needed)
+RUN npm install -g @angular/cli@latest --silent
+
+# Copy the entire project to the container
 COPY . /app
 
-# start app
-CMD ng serve --host 0.0.0.0
+# Start the app
+CMD ["ng", "serve", "--host", "0.0.0.0"]
