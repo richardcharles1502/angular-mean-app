@@ -1,0 +1,32 @@
+name: Build and Push Docker Images
+
+on:
+  push:
+    branches:
+      - master  # Replace with your branch name
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Login to AWS ECR
+        run: |
+          aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 250836156404.dkr.ecr.eu-north-1.amazonaws.com
+
+      - name: Build and Push Client Docker Image
+        working-directory: ./client
+        run: |
+          docker build -t client-image .
+          docker tag client-image:latest 250836156404.dkr.ecr.eu-north-1.amazonaws.com/docker-repo/client-image:latest
+          docker push 250836156404.dkr.ecr.eu-north-1.amazonaws.com/docker-repo/client-image:latest
+
+      - name: Build and Push Server Docker Image
+        working-directory: ./server
+        run: |
+          docker build -t server-image .
+          docker tag server-image:latest 250836156404.dkr.ecr.eu-north-1.amazonaws.com/docker-repo/server-image:latest
+          docker push 250836156404.dkr.ecr.eu-north-1.amazonaws.com/docker-repo/server-image:latest
