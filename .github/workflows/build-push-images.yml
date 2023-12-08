@@ -30,7 +30,7 @@ jobs:
         run: |
           docker build -t client-image .
           docker tag client-image:latest 250836156404.dkr.ecr.eu-north-1.amazonaws.com/docker-repo/client-image:latest
-          docker push --debug 250836156404.dkr.ecr.eu-north-1.amazonaws.com/docker-repo
+          docker -l debug push 2508361564041111.dkr.ecr.eu-north-1.amazonaws.com/docker-repo/client-image:latest
 
       - name: Build and Push Server Docker Image
         working-directory: ./server
