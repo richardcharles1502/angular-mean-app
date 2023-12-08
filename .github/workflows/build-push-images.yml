@@ -1,40 +1,39 @@
-name: Build and Push Docker Images
+name: Deploy to ECR
 
 on:
+ 
   push:
-    branches:
-      - master  # Replace with your branch name
+    branches: [ master ]
 
 jobs:
-  build-and-push:
+  
+  build:
+    
+    name: Build Image
     runs-on: ubuntu-latest
 
+   
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      
-      - name: Use Node.js 16
-        uses: actions/setup-node@v2
-        with:
-          node-version: '16'
 
-      - name: Login to AWS ECR
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        run: |
-          aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 250836156404.dkr.ecr.eu-north-1.amazonaws.com
+    - name: Check out code
+      uses: actions/checkout@v2
+    
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: eu-north-1
 
-      - name: Build and Push Client Docker Image
-        working-directory: ./client
-        run: |
-          docker build -t client-image .
-          docker tag client-image:latest 250836156404.dkr.ecr.eu-north-1.amazonaws.com/docker-repo/client-image:latest
-          docker -l debug push 2508361564041111.dkr.ecr.eu-north-1.amazonaws.com/docker-repo/client-image:latest
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build and Push Server Docker Image
-        working-directory: ./server
-        run: |
-          docker build -t server-image .
-          docker tag server-image:latest 250836156404.dkr.ecr.eu-north-1.amazonaws.com/docker-repo/server-image:latest
-          docker push --debug 250836156404.dkr.ecr.eu-north-1.amazonaws.com/docker-repo
+    - name: Build and Push Client Docker Image to Amazon ECR
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: docker-repo
+        IMAGE_TAG: client-image
+      run: |
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
