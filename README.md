@@ -1,0 +1,1 @@
+Simple Contact Form, created using MEAN (Mongodb, Expressjs, Angular, Node), using docker and git flow deployed this application in an AWS ECR container and hosted it using the EC2 instance and ECS cluster
